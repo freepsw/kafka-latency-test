@@ -199,7 +199,11 @@ test-consumer-group latency-test    0          8302            8302            0
 ```
 > sudo yum update -y
 > sudo yum install -y  yum-utils
-> sudo yum install -y python3
+> sudo yum install -y python3 git
+
+> cd ~
+> git clone https://github.com/freepsw/kafka-latency-test.git
+> cd ~/kafka-latency-test/code/python
 > python3 -m venv python3-virtualenv
 > source python3-virtualenv/bin/activate
 > pip install -r requirements.txt
