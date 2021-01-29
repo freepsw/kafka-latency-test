@@ -390,7 +390,7 @@ Percentiles: 50th = 34, 99th = 122, 99.9th = 122
 - 가장 속도가 느린 테스트 케이스를 제외하고, 
 - 나머지 e2e latency를 비교함. 
 - python-confluent가 rest api의 속도에 어느정도 비슷한 성능을 유지함. 
-
+![Test Result Top3](/images/02.result_top3.png)
 
 ### Producer vs Consumer Latency
 - Kafka의 성능 구간을 크게 produce, consume으로 구분하였을때 
@@ -399,6 +399,12 @@ Percentiles: 50th = 34, 99th = 122, 99.9th = 122
 - 즉, Kafka에 데이터가 저장되면, 이를 가능한 빨리 감지하여 전달 할 수 있는 설정 
     - 하지만, latency를 최적화하면 throughtput이 너무 낮아질 수 있으므로, 
     - 이를 업무 목적에 맞게 조정할 필요가 있음. 
+
+![python confluent latency](/images/10.result_python-confluent.png)
+
+
+![java latency](/images/11.result_java_e2e.png)
+
 
 
 
@@ -409,8 +415,10 @@ Percentiles: 50th = 34, 99th = 122, 99.9th = 122
 
 ### Compare the configutation value of each kafka library
 - 개별 라이브러리에서 기본으로 제공하는 configuration을 비교
-- 설정값의 차이는 크지 않으며, 
-	                                     |  python-kafka   | python-confluent  |   java
+- 설정값의 차이는 크지 않음.
+
+```
+|  python-kafka   | python-confluent  |   java
 
 fetch_min_bytes                          | 1               | 1                 |  1                                                                                         
 fetch_max_wait_ms                        | 500             | 500               |  500                                                                    
@@ -447,7 +455,7 @@ socket.connection.setup.timeout.max.ms   |                 | -                 |
 rebalance.timeout.ms                     |                 | -                 |  TRUE                                                               
 TCP_NODELAY                              | TRUE            | -                 |  -                  
 
-
+```
 
 
 
