@@ -424,7 +424,7 @@ Percentiles: 50th = 34, 99th = 122, 99.9th = 122
 - 설정값의 차이는 크지 않음.
 
 ```
-|  python-kafka   | python-confluent  |   java
+                                         |  python-kafka   | python-confluent  |   java
 
 fetch_min_bytes                          | 1               | 1                 |  1                                                                                         
 fetch_max_wait_ms                        | 500             | 500               |  500                                                                    
