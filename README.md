@@ -212,7 +212,7 @@ test-consumer-group latency-test    0          8302            8302            0
 > pip install -r requirements.txt
 ```
 
-### Test0. Send a 1.3 mb image file using socket protocol 
+### Test scenario 0. Send a 1.3 mb image file using socket protocol 
 
 #### Compile java code 
 ```
@@ -246,7 +246,7 @@ Elapsed Time: 0.003 : 3.0
 Elapsed Time: 0.001 : 1.0
 ```
 
-### Test1. Send a 1.3 mb image file using REST API
+### Test scenario 1. Send a 1.3 mb image file using REST API
 #### Run the web server 
 ```
 > cd ~/kafka-latency-test/code/python
@@ -263,9 +263,7 @@ PROCESSING TIME:  0.0022058486938476562
 .....
 ```
 
-
-
-### Test2. Send a 1.3 mb image file using python library (kafka-python)
+### Test scenario 2. Send a 1.3 mb image file using python library (kafka-python)
 #### Run the test application
 ```
 > cd ~/kafka-latency-test/code/python
@@ -302,7 +300,7 @@ consumer = KafkaConsumer(
                          group_id=group_id)
 ```
 
-### Test3. Send a 13. mb(1302245 bytes) image file using python library (kafka-python)
+### Test scenario 3. Send a 13. mb(1302245 bytes) image file using python library (kafka-python)
 #### 입력 인수 설명 
     - broker list : kafka broker의 주소:port
     - topic name : 테스트할 topic name (latency-test)
@@ -366,40 +364,7 @@ Produce Time : Consume Time = 0.023,0.013
 Processing Time :0.037
 Produce Time : Consume Time = 0.021,0.012
 Processing Time :0.034
-Produce Time : Consume Time = 0.022,0.01
-Processing Time :0.033
-Produce Time : Consume Time = 0.026,0.012
-Processing Time :0.039
-Produce Time : Consume Time = 0.023,0.012
-Processing Time :0.035
-Produce Time : Consume Time = 0.028,0.012
-Processing Time :0.041
-Produce Time : Consume Time = 0.025,0.011
-Processing Time :0.036
-Produce Time : Consume Time = 0.024,0.011
-Processing Time :0.036
-Produce Time : Consume Time = 0.023,0.01
-Processing Time :0.033
-Produce Time : Consume Time = 0.022,0.011
-Processing Time :0.033
-Produce Time : Consume Time = 0.022,0.011
-Processing Time :0.034
-Produce Time : Consume Time = 0.022,0.009
-Processing Time :0.032
-Produce Time : Consume Time = 0.022,0.011
-Processing Time :0.034
-Produce Time : Consume Time = 0.021,0.011
-Processing Time :0.033
-Produce Time : Consume Time = 0.021,0.009
-Processing Time :0.031
-Produce Time : Consume Time = 0.022,0.009
-Processing Time :0.031
-Produce Time : Consume Time = 0.021,0.009
-Processing Time :0.03
-Produce Time : Consume Time = 0.021,0.007
-Processing Time :0.029
-Produce Time : Consume Time = 0.021,0.008
-Processing Time :0.029
+.......
 Avg latency: 38.5564 ms
 
 Percentiles: 50th = 34, 99th = 122, 99.9th = 122
@@ -421,7 +386,7 @@ Percentiles: 50th = 34, 99th = 122, 99.9th = 122
 
 ## STEP 5. Test Result 
 ### ALL Test Result 
-- REST API가 가장 빠르게 데이터를 전달하며, 
+- REST API/Socket 통신이 가장 빠르게 데이터를 전달하며, 
 - python (kafka-python library)를 사용한 케이스가 최악의 성능을 보인다.
 
 ![Test Result All](/images/01.result_all.png)
@@ -436,8 +401,8 @@ Percentiles: 50th = 34, 99th = 122, 99.9th = 122
 ### Producer vs Consumer Latency
 - Kafka의 성능 구간을 크게 produce, consume으로 구분하였을때 
 - 어느 구간에서 가장 많은 시간이 소요되는지 확인해 보면, 
-- Consumer 구간의 처리 속도가 전체 성능에 많은 영향을 미치는 것을 볼 수 있다. 
-- 즉, Kafka에 데이터가 저장되면, 이를 가능한 빨리 감지하여 전달 할 수 있는 설정 
+- Producer 구간의 처리 속도가 전체 성능에 많은 영향을 미치는 것을 볼 수 있다. 
+- 즉, Kafka로 데이터를 전달하는 주기를 빠르게 조정하는 설정을 확인해야 한다. 
     - 하지만, latency를 최적화하면 throughtput이 너무 낮아질 수 있으므로, 
     - 이를 업무 목적에 맞게 조정할 필요가 있음. 
 
@@ -447,15 +412,15 @@ Percentiles: 50th = 34, 99th = 122, 99.9th = 122
 ![java latency](/images/11.result_java_e2e.png)
 
 
+### 그럼 kafka-confluent library는 어떤 설정이 다를까?
+- 아래 3개의 library에 기본으로 설정된 값을 비교해 보면, 
+- 크게 차이가 나지 않으며, 실제 다른 값들을 조정해 봐도 성능(latency)가 크게 줄어들지 않았다. 
+- 그럼 kafka-confluent library만 제공하는 다른 설정이 있는걸까?
 
-
-
-
-
-
-
-### Compare the configutation value of each kafka library
+#### Compare the configutation value of each kafka library
 - 개별 라이브러리에서 기본으로 제공하는 configuration을 비교
+    - kafka-confluent : https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
+    - python-kafka : https://kafka-python.readthedocs.io/en/master/apidoc/KafkaProducer.html
 - 설정값의 차이는 크지 않음.
 
 ```
@@ -498,6 +463,8 @@ TCP_NODELAY                              | TRUE            | -                 |
 
 ```
 
+#### kafka-confluent library만의 세부 설정 값들
+- kafka-confluent의 latency가 더 빠르게 처리할 수 있도록 영향을 줄 수 있는 설정값 확인 필요
 
 
 
@@ -739,324 +706,3 @@ curl -X GET https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.der -o le
 
 sudo keytool -trustcacerts -keystore /Library/Java/JavaVirtualMachines/jdk-11.0.7.jdk/Contents/Home/lib/security/cacerts -storepass changeit -noprompt -importcert -alias lets-encrypt-x3-cross-signed -file lets-encrypt-x3-cross-signed.der
 ```
-
-
-
-0.0060520172119140625
-0.0024118423461914062
-0.0029418468475341797
-0.0023598670959472656
-0.0021669864654541016
-0.0027899742126464844
-0.0026035308837890625
-0.0032994747161865234
-0.002818584442138672
-0.0026235580444335938
-0.002329111099243164
-0.002467632293701172
-0.003282785415649414
-0.002304553985595703
-0.0027577877044677734
-0.0039539337158203125
-0.0023212432861328125
-0.0028667449951171875
-0.0028464794158935547
-0.0027475357055664062
-
-
-
-Produce        :  0.003474712371826172
-Consume        :  0.5992169380187988
-Total Time Sec :  0.602691650390625
-
-Produce        :  0.003659963607788086
-Consume        :  0.6073336601257324
-Total Time Sec :  0.6109936237335205
-
-Produce        :  0.0010790824890136719
-Consume        :  0.6146430969238281
-Total Time Sec :  0.6157221794128418
-
-Produce        :  0.0024497509002685547
-Consume        :  0.5962100028991699
-Total Time Sec :  0.5986597537994385
-
-Produce        :  0.0010876655578613281
-Consume        :  0.5933394432067871
-Total Time Sec :  0.5944271087646484
-
-Produce        :  0.0027370452880859375
-Consume        :  0.60750412940979
-Total Time Sec :  0.610241174697876
-
-Produce        :  0.001192331314086914
-Consume        :  0.6161398887634277
-Total Time Sec :  0.6173322200775146
-
-Produce        :  0.0022764205932617188
-Consume        :  0.6437461376190186
-Total Time Sec :  0.6460225582122803
-
-
-Produce        :  0.0012557506561279297
-Consume        :  0.6977477073669434
-Total Time Sec :  0.6990034580230713
-
-Produce        :  0.001314401626586914
-Consume        :  0.7516283988952637
-Total Time Sec :  0.7529428005218506
-
-Produce        :  0.0012123584747314453
-Consume        :  0.7296280860900879
-Total Time Sec :  0.7308404445648193
-
-Produce        :  0.004363536834716797
-Consume        :  0.74247145652771
-Total Time Sec :  0.7468349933624268
-
-Produce        :  0.0013823509216308594
-Consume        :  0.7077727317810059
-Total Time Sec :  0.7091550827026367
-
-Produce        :  0.002681732177734375
-Consume        :  0.7134742736816406
-Total Time Sec :  0.716156005859375
-
-Produce        :  0.0017423629760742188
-Consume        :  0.6749093532562256
-Total Time Sec :  0.6766517162322998
-
-Produce        :  0.0028374195098876953
-Consume        :  0.6979420185089111
-Total Time Sec :  0.7007794380187988
-
-Produce        :  0.001905679702758789
-Consume        :  0.7318217754364014
-Total Time Sec :  0.7337274551391602
-
-Produce        :  0.001489400863647461
-Consume        :  0.6862199306488037
-Total Time Sec :  0.6877093315124512
-
-Produce        :  0.0010356903076171875
-Consume        :  0.6748201847076416
-Total Time Sec :  0.6758558750152588
-
-Produce        :  0.002939462661743164
-Consume        :  0.6669867038726807
-Total Time Sec :  0.6699261665344238
-
-
-
-1. Producer Send    :  0.0022995471954345703
-2. Consumer Received:  0.03455305099487305
-3. Total Time       :  0.03701448440551758
-
-
-1. Producer Send    :  0.002669095993041992
-2. Consumer Received:  0.007568836212158203
-3. Total Time       :  0.010372638702392578
-
-
-1. Producer Send    :  0.0016574859619140625
-2. Consumer Received:  0.006745338439941406
-3. Total Time       :  0.008509635925292969
-
-
-1. Producer Send    :  0.0019371509552001953
-2. Consumer Received:  0.00411224365234375
-3. Total Time       :  0.00617671012878418
-
-
-1. Producer Send    :  0.0026280879974365234
-2. Consumer Received:  0.004806995391845703
-3. Total Time       :  0.007584810256958008
-
-
-1. Producer Send    :  0.0022029876708984375
-2. Consumer Received:  0.0030198097229003906
-3. Total Time       :  0.005712032318115234
-
-
-1. Producer Send    :  0.0016446113586425781
-2. Consumer Received:  0.0043179988861083984
-3. Total Time       :  0.006256580352783203
-
-
-1. Producer Send    :  0.001674652099609375
-2. Consumer Received:  0.0038933753967285156
-3. Total Time       :  0.0056650638580322266
-
-
-1. Producer Send    :  0.0023965835571289062
-2. Consumer Received:  0.0052950382232666016
-3. Total Time       :  0.007817268371582031
-
-
-1. Producer Send    :  0.0015752315521240234
-2. Consumer Received:  0.0036764144897460938
-3. Total Time       :  0.005364418029785156
-
-
-1. Producer Send    :  0.0021026134490966797
-2. Consumer Received:  0.004542112350463867
-3. Total Time       :  0.006775379180908203
-
-
-1. Producer Send    :  0.002031087875366211
-2. Consumer Received:  0.004101991653442383
-3. Total Time       :  0.0064198970794677734
-
-
-1. Producer Send    :  0.0015153884887695312
-2. Consumer Received:  0.004944801330566406
-3. Total Time       :  0.006554603576660156
-
-
-1. Producer Send    :  0.001811981201171875
-2. Consumer Received:  0.0031282901763916016
-3. Total Time       :  0.00504612922668457
-
-
-1. Producer Send    :  0.0013768672943115234
-2. Consumer Received:  0.003997325897216797
-3. Total Time       :  0.0054585933685302734
-
-
-1. Producer Send    :  0.0020596981048583984
-2. Consumer Received:  0.0035181045532226562
-3. Total Time       :  0.005982160568237305
-
-
-1. Producer Send    :  0.0021622180938720703
-2. Consumer Received:  0.004236698150634766
-3. Total Time       :  0.006512641906738281
-
-
-1. Producer Send    :  0.001768350601196289
-2. Consumer Received:  0.0029518604278564453
-3. Total Time       :  0.004820346832275391
-
-
-1. Producer Send    :  0.0014307498931884766
-2. Consumer Received:  0.0037708282470703125
-3. Total Time       :  0.005296945571899414
-
-
-1. Producer Send    :  0.002272367477416992
-2. Consumer Received:  0.003206968307495117
-3. Total Time       :  0.0055768489837646484
-
-
-
-
-kafka.tools.EndToEndLatency
-0.111
-0.039
-0.036
-0.035
-0.036
-0.039
-0.035
-0.033
-0.033
-0.033
-0.034
-0.033
-0.032
-0.032
-0.033
-0.029
-0.031
-0.034
-0.036
-0.029
-
-
-Produce Time : Consume Time = 0.081,0.039
-Processing Time :0.122
-Produce Time : Consume Time = 0.023,0.013
-Processing Time :0.037
-Produce Time : Consume Time = 0.021,0.012
-Processing Time :0.034
-Produce Time : Consume Time = 0.022,0.01
-Processing Time :0.033
-Produce Time : Consume Time = 0.026,0.012
-Processing Time :0.039
-Produce Time : Consume Time = 0.023,0.012
-Processing Time :0.035
-Produce Time : Consume Time = 0.028,0.012
-Processing Time :0.041
-Produce Time : Consume Time = 0.025,0.011
-Processing Time :0.036
-Produce Time : Consume Time = 0.024,0.011
-Processing Time :0.036
-Produce Time : Consume Time = 0.023,0.01
-Processing Time :0.033
-Produce Time : Consume Time = 0.022,0.011
-Processing Time :0.033
-Produce Time : Consume Time = 0.022,0.011
-Processing Time :0.034
-Produce Time : Consume Time = 0.022,0.009
-Processing Time :0.032
-Produce Time : Consume Time = 0.022,0.011
-Processing Time :0.034
-Produce Time : Consume Time = 0.021,0.011
-Processing Time :0.033
-Produce Time : Consume Time = 0.021,0.009
-Processing Time :0.031
-Produce Time : Consume Time = 0.022,0.009
-Processing Time :0.031
-Produce Time : Consume Time = 0.021,0.009
-Processing Time :0.03
-Produce Time : Consume Time = 0.021,0.007
-Processing Time :0.029
-Produce Time : Consume Time = 0.021,0.008
-Processing Time :0.029
-Avg latency: 38.5564 ms
-
-
-
-0.081,    0.039
-0.023,    0.013
-0.021,    0.012
-0.022,    0.01
-0.026,    0.012
-0.023,    0.012
-0.028,    0.012
-0.025,    0.011
-0.024,    0.011
-0.023,    0.01
-0.022,    0.011
-0.022,    0.011
-0.022,    0.009
-0.022,    0.011
-0.021,    0.011
-0.021,    0.009
-0.022,    0.009
-0.021,    0.009
-0.021,    0.007
-0.021,    0.008
-
-
-
-0.018
-0.002
-0.002
-0.001
-0.002
-0.002
-0.003
-0.001
-0.003
-0.002
-0.002
-0.002
-0.002
-0.001
-0.001
-0.002
-0.001
-0.001
-0.001
-0.001
