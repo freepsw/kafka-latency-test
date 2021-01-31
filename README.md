@@ -39,7 +39,10 @@
 
 ### Test Scenario 
 - Latency를 비교하기 위해서 REST API와 다양한 kafka library(python, java)를 활용함. 
+    - 모든 테스트 케이스에서 데이터를 수신하는 로직에서 수신된 데이터를 file로 저장하는 로직은 제외함. 
+    - Network를 통해서 데이터를 수신한 시간까지만 latency 시간으로 계산함. 
 - 그림 추가 ()
+- Scenario 0. Socket 통신 latency 측정 
 - Scenario 1. REST API latency 측정 
 - Scenario 2. kafka-python library latency 측정 
 - Scenario 3. confluent-kafka library latency 측정 
@@ -207,6 +210,40 @@ test-consumer-group latency-test    0          8302            8302            0
 > python3 -m venv python3-virtualenv
 > source python3-virtualenv/bin/activate
 > pip install -r requirements.txt
+```
+
+### Test0. Send a 1.3 mb image file using socket protocol 
+
+#### Compile java code 
+```
+> cd ~/kafka-latency-test/code/java/socket-examples/src
+> javac -cp . SocketClient.java
+> javac -cp . SocketServer.java
+```
+
+#### Run socket server
+- Socket server에서 전송된 이미지 파일을 File로 저장하는 부분은 제거함. 
+- Disk i/o 시간은 테스트트에서 제외
+```
+> cd ~/kafka-latency-test/code/java/socket-examples/src
+> java SocketServer 
+Socket server has started....
+
+```
+
+#### Send image file to socket server
+
+```
+> cd ~/kafka-latency-test/code/java/socket-examples/src
+> java SocketClient
+Elapsed Time: 0.018 : 18.0
+Elapsed Time: 0.002 : 2.0
+Elapsed Time: 0.002 : 2.0
+Elapsed Time: 0.001 : 1.0
+Elapsed Time: 0.002 : 2.0
+Elapsed Time: 0.002 : 2.0
+Elapsed Time: 0.003 : 3.0
+Elapsed Time: 0.001 : 1.0
 ```
 
 ### Test1. Send a 1.3 mb image file using REST API
@@ -1000,3 +1037,26 @@ Avg latency: 38.5564 ms
 0.021,    0.009
 0.021,    0.007
 0.021,    0.008
+
+
+
+0.018
+0.002
+0.002
+0.001
+0.002
+0.002
+0.003
+0.001
+0.003
+0.002
+0.002
+0.002
+0.002
+0.001
+0.001
+0.002
+0.001
+0.001
+0.001
+0.001

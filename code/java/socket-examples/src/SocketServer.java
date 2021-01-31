@@ -9,21 +9,22 @@ public class SocketServer {
             OutputStream out = null;
             while(true){
                 try {
+                    System.out.println("Socket server has started....");
                     Socket socket = serverSocket.accept();
                     System.out.println("Received a request");
                     long start = System.currentTimeMillis();
 
                     String fileName = "image-" + System.currentTimeMillis() + ".jpg";
                     in = socket.getInputStream();
-                    out = new FileOutputStream(fileName);
+//                    out = new FileOutputStream(fileName);
                     byte[] bytes = new byte[16*1024];
 
                     int count;
                     while ((count = in.read(bytes)) > 0) {
-                        out.write(bytes, 0, count);
+//                        out.write(bytes, 0, count);
                     }
 
-                    out.close();
+//                    out.close();
                     in.close();
 
                     long end = System.currentTimeMillis();
