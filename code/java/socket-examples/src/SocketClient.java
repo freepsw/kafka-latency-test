@@ -18,9 +18,9 @@ public class SocketClient {
             OutputStream out = socket.getOutputStream();
             int count;
             while ((count = in.read(bytes)) > 0) {
-                out.write(bytes, 0, count);
+//                out.write(bytes, 0, count);
             }
-            out.close();
+//            out.close();
             in.close();
             socket.close();
 

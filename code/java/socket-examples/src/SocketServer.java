@@ -14,17 +14,17 @@ public class SocketServer {
                     long start = System.currentTimeMillis();
 
                     String fileName = "image-" + System.currentTimeMillis() + ".jpg";
-                    BufferedInputStream bis = new BufferedInputStream(socket.getInputStream());
-//                    File f = new File(fileName);
-//                    BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(f));
-                    int bytesWritten = 0;
-                    int b;
-                    while ((b = bis.read()) != -1) {
-//                        bos.write(b);
-                        bytesWritten++;
+                    in = socket.getInputStream();
+                    out = new FileOutputStream(fileName);
+                    byte[] bytes = new byte[16*1024];
+
+                    int count;
+                    while ((count = in.read(bytes)) > 0) {
+                        out.write(bytes, 0, count);
                     }
-//                    bos.close();
-                    bis.close();
+
+                    out.close();
+                    in.close();
 
                     long end = System.currentTimeMillis();
                     float time_elasped = end - start;
@@ -41,3 +41,17 @@ public class SocketServer {
         }
     }
 }
+
+
+//    String fileName = "image-" + System.currentTimeMillis() + ".jpg";
+//    BufferedInputStream bis = new BufferedInputStream(socket.getInputStream());
+//    //                    File f = new File(fileName);
+////                    BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(f));
+//    int bytesWritten = 0;
+//    int b;
+//                    while ((b = bis.read()) != -1) {
+////                        bos.write(b);
+//                            bytesWritten++;
+//                            }
+////                    bos.close();
+//                            bis.close();
