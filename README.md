@@ -18,7 +18,8 @@
     - 잠정적인 결과이지만, kafka의 latency를 향상을 위해서는 많은 시도가 필요할 것 같음.
     - 즉, 단일 요청의 latency는 확실히 느리지만,
     - 대량의 처리를 기준으로 평균 latency를 비교하면 평균적인 latency는 많이 낮아짐. 
-
+### Slideshare 리포트 
+- https://www.slideshare.net/freepsw/apache-kafka-performancelatencybenchmarkv03
 
 ## PREREQUISITE 
 
@@ -401,10 +402,12 @@ Percentiles: 50th = 34, 99th = 122, 99.9th = 122
 ### Producer vs Consumer Latency
 - Kafka의 성능 구간을 크게 produce, consume으로 구분하였을때 
 - 어느 구간에서 가장 많은 시간이 소요되는지 확인해 보면, 
-- Producer 구간의 처리 속도가 전체 성능에 많은 영향을 미치는 것을 볼 수 있다. 
-- 즉, Kafka로 데이터를 전달하는 주기를 빠르게 조정하는 설정을 확인해야 한다. 
+- kafka-confluent의 경우는 consumer 구간, java의 경우 producer의 처리 속도가 전체 성능에 많은 영향을 미치는 것을 볼 수 있다. 
+- kafka-confluent의 속도가 개선된 구간을 보면, producer의 latency를 엄청나게 낮추면서 전체 latency가 줄어 든것으로 확인된다.  
+    - Kafka로 데이터를 전달하는 주기를 빠르게 조정하는 설정을 확인해야 한다. 
     - 하지만, latency를 최적화하면 throughtput이 너무 낮아질 수 있으므로, 
     - 이를 업무 목적에 맞게 조정할 필요가 있음. 
+
 
 ![python confluent latency](/images/10.result_python-confluent.png)
 
@@ -464,7 +467,7 @@ TCP_NODELAY                              | TRUE            | -                 |
 ```
 
 #### kafka-confluent library만의 세부 설정 값들
-- kafka-confluent의 latency가 더 빠르게 처리할 수 있도록 영향을 줄 수 있는 설정값 확인 필요
+- kafka-confluent의 latency가 더 빠르게 처리할 수 있도록 영향을 줄 것으로 판단되는 설정값 확인 필요
 
 
 

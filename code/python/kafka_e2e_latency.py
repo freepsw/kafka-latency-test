@@ -29,7 +29,7 @@ print("group : ", group_id)
 
 producer = KafkaProducer(bootstrap_servers=broker,
                          linger_ms=0,
-                         max_block_ms=60000*1024,
+                         # max_block_ms=60000*1024,
                          acks=1, # After appending the message to the leader
                          # batch_size=0,
                          # send_buffer_bytes= 3* 1024 * 1024,
